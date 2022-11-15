@@ -63,6 +63,16 @@
 #include "../../../iommu/exynos-pcie-iommu-exp.h"
 #include <trace/hooks/pci.h>
 
+#undef pr_info
+#undef pr_debug
+#define pr_info(...) do { } while (0)
+#define pr_debug(...) do { } while (0)
+
+#undef dev_info
+#define dev_info(...) do { } while (0)
+#undef dev_dbg
+#define dev_dbg(...) do { } while (0)
+
 struct exynos_pcie g_pcie_rc[MAX_RC_NUM];
 int pcie_is_linkup;	/* checkpatch: do not initialise globals to 0 */
 static struct separated_msi_vector sep_msi_vec[MAX_RC_NUM][PCIE_MAX_SEPA_IRQ_NUM];
