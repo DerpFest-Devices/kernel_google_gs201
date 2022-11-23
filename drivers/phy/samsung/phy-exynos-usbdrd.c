@@ -2642,11 +2642,6 @@ err1:
 #ifdef CONFIG_PM
 static int exynos_usbdrd_phy_resume(struct device *dev)
 {
-	struct exynos_usbdrd_phy *phy_drd = dev_get_drvdata(dev);
-
-	dev_info(dev, "%s, is_conn = %d\n",
-		 __func__, phy_drd->is_conn);
-
 	return 0;
 }
 
