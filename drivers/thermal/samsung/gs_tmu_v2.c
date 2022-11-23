@@ -970,7 +970,6 @@ static void gs_tmu_work(struct kthread_work *work)
 {
 	struct gs_tmu_data *data = container_of(work,
 			struct gs_tmu_data, irq_work);
-	struct thermal_zone_device *tz = data->tzd;
 
 	gs_report_trigger(data);
 	mutex_lock(&data->lock);
