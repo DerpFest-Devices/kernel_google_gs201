@@ -355,7 +355,6 @@ static const struct dma_map_ops pcie_dma_ops = {
 
 static void save_pma_regs(struct exynos_pcie *exynos_pcie)
 {
-	struct device *dev = exynos_pcie->pci->dev;
 	u32 *save;
 	int i;
 
@@ -2366,7 +2365,6 @@ void exynos_pcie_rc_cpl_timeout_work(struct work_struct *work)
 		container_of(work, struct exynos_pcie, cpl_timeout_work.work);
 	struct dw_pcie *pci = exynos_pcie->pci;
 	struct pcie_port *pp = &pci->pp;
-	struct device *dev = pci->dev;
 	unsigned long flags;
 
 	if (exynos_pcie->state == STATE_LINK_DOWN)
@@ -2530,7 +2528,6 @@ void exynos_pcie_rc_assert_phy_reset(struct pcie_port *pp)
 void exynos_pcie_rc_resumed_phydown(struct pcie_port *pp)
 {
 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-	struct device *dev = pci->dev;
 	struct exynos_pcie *exynos_pcie = to_exynos_pcie(pci);
 	int ret;
 
@@ -2744,7 +2741,6 @@ static int exynos_pcie_rc_msi_init(struct pcie_port *pp)
 	u32 val, mask_val, i;
 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
 	struct exynos_pcie *exynos_pcie = to_exynos_pcie(pci);
-	struct device *dev = pci->dev;
 	struct pci_bus *ep_pci_bus;
 #if IS_ENABLED(CONFIG_LINK_DEVICE_PCIE)
 	unsigned long msi_addr_from_dt;
@@ -2920,9 +2916,6 @@ retry:
 	oc_done = check_exynos_pcie_reg_status(exynos_pcie, phy_base_regs,
 					       0x0DE8, 0xf, 0xf, &lock_cnt);
 	if (!oc_done)
-		dev_err(dev, "OC Fail: PLL_LOCK:%d, CDR_LOCK:%d, OC:%d\n",
-			pll_lock, cdr_lock, oc_done);
-
 	logbuffer_log(exynos_pcie->log,
 		      "PLL_LOCK:%d, CDR_LOCK:%d, OC:%d",
 		      pll_lock, cdr_lock, oc_done);
@@ -3901,9 +3894,6 @@ static int exynos_pcie_rc_set_l1ss(int enable, struct pcie_port *pp, int id)
 				exynos_pcie_rc_rd_own_conf(pp, PCIE_LINK_L1SS_CONTROL, 4, &val);
 				val &= ~(PORT_LINK_L1SS_ENABLE);
 				exynos_pcie_rc_wr_own_conf(pp, PCIE_LINK_L1SS_CONTROL, 4, val);
-				dev_dbg(pci->dev, "WIFIdis:4RC:L1SS_CTRL(0x19C)=0x%x\n", val);
-			} else if (exynos_pcie->ep_device_type == EP_QC_WIFI) {
-				dev_dbg(dev, "%s: #4 disable WIFI L1.2\n", __func__);
 
 				/* disable sequence:
 				 * 1. ASPM EP
@@ -3969,9 +3959,7 @@ EXPORT_SYMBOL_GPL(exynos_pcie_rc_l1ss_ctrl);
 int exynos_pcie_poweron(int ch_num, int spd)
 {
 	struct exynos_pcie *exynos_pcie = &g_pcie_rc[ch_num];
-	struct dw_pcie *pci = exynos_pcie->pci;
 
-	dev_dbg(pci->dev, "%s requested with link speed GEN%d\n", __func__, spd);
 	exynos_pcie->max_link_speed = spd;
 
 	return exynos_pcie_rc_poweron(ch_num);
